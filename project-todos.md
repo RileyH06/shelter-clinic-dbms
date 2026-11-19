@@ -8,7 +8,7 @@
 
 \* Insert into User(email, password) if email NOT EXISTS
 
-Account login
+**Account login**
 
 \* Select User(email, password) in Users IF EXISTS
 
