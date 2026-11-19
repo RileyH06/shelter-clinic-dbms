@@ -1,0 +1,63 @@
+
+USE shelterclinic_schema;
+
+CREATE TABLE user(
+    user_id INT AUTO_INCREMENT,
+    email VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+
+    PRIMARY KEY(user_id)
+);
+
+CREATE TABLE shelter(
+    shelter_id INT DEFAULT 1,
+    name VARCHAR(50) NOT NULL,
+    capacity INT DEFAULT 150 NOT NULL,
+    password VARCHAR(255) NOT NULL,
+
+    PRIMARY KEY(shelter_id),
+    CONSTRAINT chk_single_row CHECK (shelter_id = 1)
+);
+
+CREATE TABLE animal(
+    animal_id INT AUTO_INCREMENT,
+    name VARCHAR(50),
+    description VARCHAR(500) NOT NULL,
+    age INT,
+    species ENUM('CAT', 'DOG') NOT NULL,
+
+    PRIMARY KEY(animal_id),
+    CONSTRAINT chk_descr_length CHECK (CHAR_LENGTH(description) > 20)
+);
+
+CREATE TABLE medical_record (
+    animal_id INT AUTO_INCREMENT,
+    is_fixed ENUM ('SPAYED', 'NEUTERED', 'NONE', 'UNKNOWN') NOT NULL DEFAULT 'UNKNOWN',
+    is_vaccinated ENUM ('YES', 'NO', 'UNKNOWN') NOT NULL DEFAULT 'UNKNOWN',
+
+    PRIMARY KEY (animal_id),
+    FOREIGN KEY(animal_id) REFERENCES animal(animal_id) ON DELETE CASCADE
+);
+
+CREATE TABLE medical_conditions (
+    animal_id INT AUTO_INCREMENT,
+    description VARCHAR(255) NOT NULL,
+
+    PRIMARY KEY (animal_id, description),
+    FOREIGN KEY(animal_id) REFERENCES animal(animal_id) ON DELETE CASCADE
+
+);
+
+CREATE TABLE Tag(
+    tag_name Varchar(50),
+    PRIMARY KEY(tag_name)
+);
+
+CREATE TABLE animal_tag(
+    animal_id INT AUTO_INCREMENT,
+    tag_name Varchar(50),
+
+    PRIMARY KEY(animal_id, tag_name),
+    FOREIGN KEY(animal_id) REFERENCES Animal(animal_id),
+    FOREIGN KEY(tag_name) REFERENCES Tag(tag_name)
+);
