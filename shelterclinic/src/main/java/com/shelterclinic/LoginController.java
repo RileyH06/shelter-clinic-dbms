@@ -19,21 +19,33 @@ public class LoginController {
     }
 
     @FXML
+    private void openShelterLogin() throws IOException {
+        App.setRoot("shelter-login");
+    }
+
+    @FXML
     public void validateUser() throws IOException {
         //check email and password against database
-        String emailOrID = emailField.getText().trim();
+        String email = emailField.getText().trim();
         String password = passwordField.getText();
-        String sql = "SELECT user_id, password FROM `user` WHERE email = ?";
+        String sql = "SELECT user_id, password FROM user WHERE email = ?";
 
-        if (emailOrID.isEmpty() || password.isEmpty()) {
-            System.out.println("Enter your email(or ID) and password.");
-            statusLabel.setText("Enter your email(or ID) and password");
+        if (email.isEmpty() || password.isEmpty()) {
+            System.out.println("Enter your email and password.");
+            statusLabel.setText("Enter your email and password");
             return;
         }
 
-        System.out.println("EMAIL/ID: " + emailOrID + "\nPASSWORD: " + password);
+        System.out.println("EMAIL: " + email + "\nPASSWORD: " + password);
         //TODO: update database
-        App.setRoot("home-page");
+
+        try(var connection = DBUtils.getConnection()){
+            System.out.println("Connected to database!");
+
+        } catch (Exception e) {
+            System.out.println("error connecting to database");
+        }
+        //App.setRoot("home-page");
 
     }
 }

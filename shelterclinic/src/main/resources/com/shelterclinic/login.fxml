@@ -17,7 +17,7 @@
                 
                 <Label text="Login" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
 
-                <Label text="Email or ID" labelFor="$emailField" />
+                <Label text="Email" labelFor="$emailField" />
                 <TextField fx:id="emailField" maxWidth="240"/>
 
                 <Label text="Password" labelFor="$passwordField"/>
@@ -26,5 +26,6 @@
 
                 <Button text="Login" onAction="#validateUser"/>
                 <Hyperlink text="Don't have an account? Sign up here" onAction="#openSignup"/>
+                <Hyperlink text="Login as shelter" onAction="#openShelterLogin"/>
             </VBox>
 </AnchorPane>

@@ -34,16 +34,21 @@ public class SignupController {
         }
 
         //password restrictions: at least 12 chars, contains 1 number and 1 symbol
-        if (!password.matches("^(?=.*\\d)(?=.*[^a-zA-Z0-9\\s])\\S{12,}$")) {
-            statusLabel.setText("Password must be at least 12 characters, and contain at least 1 number and symbol.");
+        if (!password.matches("^(?=.*\\d)(?=.*[^a-zA-Z0-9\\s])\\S{12,255}$")) {
+            statusLabel.setText("Password must be at least 12-255 characters, and contain at least 1 number and symbol.");
             return;
         }
 
-        System.out.println("EMAIL/ID: " + email + "\nPASSWORD: " + password);
+        System.out.println("EMAIL: " + email + "\nPASSWORD: " + password);
 
         //insert validated user into database
-        //TODO: update database
-        App.setRoot("home-page");
+        try(var connection = DBUtils.getConnection()){
+            System.out.println("Connected to database!");
+
+        } catch (Exception e) {
+            System.out.println("error connecting to database");
+        }
+        //App.setRoot("home-page");
 
     }
 }
