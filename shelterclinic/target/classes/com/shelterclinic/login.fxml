@@ -17,13 +17,14 @@
                 
                 <Label text="Login" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
 
-                <Label text="Email" labelFor="$emailField" />
+                <Label text="Email or ID" labelFor="$emailField" />
                 <TextField fx:id="emailField" maxWidth="240"/>
 
                 <Label text="Password" labelFor="$passwordField"/>
                 <PasswordField fx:id="passwordField" maxWidth="240"/>
+                <Label fx:id="statusLabel"/>
 
-                <Button text="Login"/>
+                <Button text="Login" onAction="#validateUser"/>
                 <Hyperlink text="Don't have an account? Sign up here" onAction="#openSignup"/>
             </VBox>
 </AnchorPane>
