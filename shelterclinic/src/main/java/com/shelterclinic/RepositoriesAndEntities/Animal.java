@@ -1,6 +1,7 @@
 package com.shelterclinic.RepositoriesAndEntities;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Animal {
     private int animal_id;
@@ -10,14 +11,12 @@ public class Animal {
     private String species;
     private List<Tag> tags = new ArrayList<>();
 
-    public Animal(int id, String n, Integer a, String d, String s, List<Tag> t){
+    public Animal(int id, String n, Integer a, String d, String s){
         animal_id = id;
         name = n;
         age = a;
         description = d;
         species = s;
-        tags = t;
-
     }
 
     public int getAnimalId(){
@@ -42,6 +41,10 @@ public class Animal {
     public void setTags(List<Tag> t){
         tags = t;
     }
+    public String getTagsTextString() {
+        return tags.stream().map(Tag::getTagName).collect(Collectors.joining(", "));
+    }
+
     public List<Tag> getTags() {
         return tags;
     }

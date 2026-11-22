@@ -16,14 +16,14 @@
       AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                 <Button text="login" onAction="#openLogin"/>
                 <Label fx:id="shelterNameLabel" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
-                <Label text="Animals available for adoption"/>
-
+                <Label text="Animals available for adoption" style="-fx-font-weight: bold"/>
+                
                 <TableView fx:id="animalTable">
                     <columns>
                         <TableColumn fx:id="nameCol" text="Name" prefWidth="120"/>
-                        <TableColumn fx:id="ageCol" text="Age(years)" prefWidth="70"/>
+                        <TableColumn fx:id="ageCol" text="Age (Years)" prefWidth="120"/>
                         <TableColumn fx:id="speciesCol" text="Species" prefWidth="100"/>
-                        <TableColumn fx:id="tagsCol" text="Tags" prefWidth="180"/>
+                        <TableColumn fx:id="tagsCol" text="Tags" prefWidth="260"/>
                     </columns>
                 </TableView>
             </VBox>
