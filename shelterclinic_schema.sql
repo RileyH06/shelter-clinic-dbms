@@ -31,7 +31,7 @@ CREATE TABLE animal(
 );
 
 CREATE TABLE medical_record (
-    animal_id INT AUTO_INCREMENT,
+    animal_id INT NOT NULL,
     is_fixed ENUM ('SPAYED', 'NEUTERED', 'NONE', 'UNKNOWN') NOT NULL DEFAULT 'UNKNOWN',
     is_vaccinated ENUM ('YES', 'NO', 'UNKNOWN') NOT NULL DEFAULT 'UNKNOWN',
 
@@ -40,7 +40,7 @@ CREATE TABLE medical_record (
 );
 
 CREATE TABLE medical_conditions (
-    animal_id INT AUTO_INCREMENT,
+    animal_id INT NOT NULL,
     description VARCHAR(255) NOT NULL,
 
     PRIMARY KEY (animal_id, description),
@@ -54,7 +54,7 @@ CREATE TABLE Tag(
 );
 
 CREATE TABLE animal_tag(
-    animal_id INT AUTO_INCREMENT,
+    animal_id INT NOT NULL,
     tag_name Varchar(50),
 
     PRIMARY KEY(animal_id, tag_name),

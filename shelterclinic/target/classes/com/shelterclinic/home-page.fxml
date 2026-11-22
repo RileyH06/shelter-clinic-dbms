@@ -2,7 +2,8 @@
 
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.Button?>
-
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Hyperlink?>
@@ -15,6 +16,15 @@
       AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                 <Button text="login" onAction="#openLogin"/>
                 <Label fx:id="shelterNameLabel" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
-                <Label text="showing animal catalog..."/>
+                <Label text="Animals available for adoption"/>
+
+                <TableView fx:id="animalTable">
+                    <columns>
+                        <TableColumn fx:id="nameCol" text="Name" prefWidth="120"/>
+                        <TableColumn fx:id="ageCol" text="Age(years)" prefWidth="70"/>
+                        <TableColumn fx:id="speciesCol" text="Species" prefWidth="100"/>
+                        <TableColumn fx:id="tagsCol" text="Tags" prefWidth="180"/>
+                    </columns>
+                </TableView>
             </VBox>
 </AnchorPane>
