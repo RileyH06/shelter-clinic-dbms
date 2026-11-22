@@ -25,7 +25,6 @@
                 <Label fx:id="statusLabel"/>
 
                 <Button text="Login" onAction="#validateShelter"/>
-                <Hyperlink text="Need to register shelter? Sign up here" onAction="#openShelterSignup"/>
                 <Hyperlink text="Login as user" onAction="#openLogin"/>
             </VBox>
 </AnchorPane>

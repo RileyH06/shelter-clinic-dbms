@@ -30,7 +30,6 @@
                 <Label fx:id="statusLabel"/>
 
                 <Button text="Register" onAction="#CreateShelter"/>
-                <Hyperlink text="Already registered? Login here" onAction="#openShelterLogin"/>
                 <Hyperlink text="Login as user" onAction="#openLogin"/>
             </VBox>
 </AnchorPane>

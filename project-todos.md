@@ -4,15 +4,9 @@
 
 
 
-**Account Creation**
-
-\* Insert into User(email, password) if email NOT EXISTS
-
-**Account login**
-
-\* Select User(email, password) in Users IF EXISTS
-
-\* Select Shelter(shelterID, password) in Shelters IF EXISTS
+**Account Creation/login**
+\*make database queries with form info
+\*add back to home page buttons
 
 
 

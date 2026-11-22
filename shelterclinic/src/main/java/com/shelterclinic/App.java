@@ -15,10 +15,22 @@ public class App extends Application {
 
     private static Scene scene;
 
-    //TODO: MAKE FIRST SCREEN THE HOME PAGE
+    
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("login"), 640, 480);
+        //temporary
+        AppState.setShelterName("SPCA");
+        //TODO: GET SHELTER NAME
+        String shelterName = AppState.shelterNameProperty().get();
+        
+        if (shelterName == null || shelterName.isBlank()){
+            scene = new Scene(loadFXML("shelter-signup"), 640, 480);
+        }
+        else {
+            scene = new Scene(loadFXML("home-page"), 640, 480);
+        }
+        System.out.println(AppState.shelterNameProperty());
+
         stage.setScene(scene);
         stage.show();
     }

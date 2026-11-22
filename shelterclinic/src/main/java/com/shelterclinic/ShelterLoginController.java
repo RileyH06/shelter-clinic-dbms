@@ -14,11 +14,6 @@ public class ShelterLoginController {
     @FXML private Label statusLabel;
 
     @FXML
-    private void openShelterSignup() throws IOException {
-        App.setRoot("shelter-signup");
-    }
-
-    @FXML
     private void openLogin() throws IOException {
         App.setRoot("login");
     }
