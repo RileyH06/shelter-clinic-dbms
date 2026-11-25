@@ -8,7 +8,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import java.util.List;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.beans.binding.Bindings;
@@ -23,6 +23,7 @@ public class HomePageController {
     @FXML private TableColumn<Animal, Integer> ageCol;
     @FXML private TableColumn<Animal, String> speciesCol;
     @FXML private TableColumn<Animal, String> tagsCol;
+    @FXML private TableColumn<Animal, Animal> moreDetailsCol;
 
     @FXML
     private void handleLoginButton() throws IOException {
@@ -50,14 +51,45 @@ public class HomePageController {
      }
 
      @FXML private void renderTable() {
-        nameCol.setCellValueFactory(cell ->
-                new ReadOnlyStringWrapper(cell.getValue().getName()));
+        nameCol.setCellValueFactory(cell -> {
+            String name = cell.getValue().getName();
+            return new ReadOnlyStringWrapper(
+                    name == null || name.isBlank() ? "Unnamed" : name
+            );
+        });
         ageCol.setCellValueFactory(cell ->
                 new ReadOnlyObjectWrapper<>(cell.getValue().getAge()));
+        ageCol.setCellFactory(column -> new TableCell<Animal, Integer>() {
+        @Override
+            protected void updateItem(Integer age, boolean empty) {
+                super.updateItem(age, empty);
+
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(age == null ? "Unknown" : age.toString());
+                }
+            }
+        });
         speciesCol.setCellValueFactory(cell ->
                 new ReadOnlyStringWrapper(cell.getValue().getSpecies()));
         tagsCol.setCellValueFactory(cell ->
                 new ReadOnlyStringWrapper(cell.getValue().getTagsTextString()));
+        moreDetailsCol.setCellValueFactory(cell ->
+                new ReadOnlyObjectWrapper<>(cell.getValue()));
+        moreDetailsCol.setCellFactory(column -> new TableCell<Animal, Animal>() {
+            private final Button showMoreButton = new Button("Show more");
+
+            {
+                showMoreButton.setDisable(true);
+            }
+
+            @Override
+            protected void updateItem(Animal animal, boolean empty) {
+                super.updateItem(animal, empty);
+                setGraphic(empty || animal == null ? null : showMoreButton);
+            }
+        });
 
         animalTable.setPlaceholder(new Label("No animals available for adoption."));
 
