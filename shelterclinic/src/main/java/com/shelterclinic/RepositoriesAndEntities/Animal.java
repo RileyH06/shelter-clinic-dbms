@@ -13,10 +13,10 @@ public class Animal {
 
     public Animal(int id, String n, Integer a, String d, String s){
         animal_id = id;
-        name = n;
+        name = n == null || n.isBlank() ? "Unnamed" : n;
         age = a;
-        description = d;
-        species = s;
+        description = d == null || d.isBlank() ? "No description" : d;
+        species = s == null || s.isBlank() ? "Unknown" : s;
     }
 
     public int getAnimalId(){
@@ -31,6 +31,10 @@ public class Animal {
         return age;
     }
 
+    public static String formatAge(Integer age) {
+        return age == null ? "Unknown" : age.toString();
+    }
+
     public String getDescription() {
         return description;
     }
@@ -39,10 +43,11 @@ public class Animal {
         return species;
     }
     public void setTags(List<Tag> t){
-        tags = t;
+        tags = t == null ? new ArrayList<>() : t;
     }
     public String getTagsTextString() {
-        return tags.stream().map(Tag::getTagName).collect(Collectors.joining(", "));
+        String text = tags.stream().map(Tag::getTagName).collect(Collectors.joining(", "));
+        return text.isBlank() ? "None" : text;
     }
 
     public List<Tag> getTags() {
