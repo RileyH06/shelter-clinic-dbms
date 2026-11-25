@@ -46,7 +46,7 @@
                 </columns>
             </TableView>
             <!--TODO: make this unavailable for signed out user-->
-            <Button fx:id="adoptBtn" text="Adopt"/>
+            <Button fx:id="adoptBtn" text="Adopt" onAction="#adoptAnimal"/>
         </VBox>
     </content>
 </ScrollPane>

@@ -50,7 +50,8 @@ public class HomePageController {
         }
     }
 
-    @FXML public void initialize(){
+    @FXML 
+    public void initialize(){
         shelterNameLabel.textProperty().bind(AppState.shelterNameProperty());
         admitBtn.disableProperty().bind(AppState.loggedInProperty().not());
         loginButton.textProperty().bind(
@@ -62,12 +63,8 @@ public class HomePageController {
      }
 
      @FXML private void renderTable() {
-        nameCol.setCellValueFactory(cell -> {
-            String name = cell.getValue().getName();
-            return new ReadOnlyStringWrapper(
-                    name == null || name.isBlank() ? "Unnamed" : name
-            );
-        });
+        nameCol.setCellValueFactory(cell ->
+                new ReadOnlyStringWrapper(cell.getValue().getName()));
         ageCol.setCellValueFactory(cell ->
                 new ReadOnlyObjectWrapper<>(cell.getValue().getAge()));
         ageCol.setCellFactory(column -> new TableCell<Animal, Integer>() {
@@ -75,11 +72,7 @@ public class HomePageController {
             protected void updateItem(Integer age, boolean empty) {
                 super.updateItem(age, empty);
 
-                if (empty) {
-                    setText(null);
-                } else {
-                    setText(age == null ? "Unknown" : age.toString());
-                }
+                setText(empty ? null : Animal.formatAge(age));
             }
         });
         speciesCol.setCellValueFactory(cell ->
