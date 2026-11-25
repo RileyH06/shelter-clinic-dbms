@@ -1,13 +1,13 @@
 **Features and Queries:** 
 
-\*If user is logged in, enable admit/adopt buttons(this might just be a UI/java thing)
-
 
 
 **Account Creation/login**
-\*make database queries with form info
-\*add back to home page buttons
+\*fix schema for randomized shelter ID
 
+**Home page**
+\* add filters
+\* add admission form
 
 
 **Admit Animal**
@@ -56,7 +56,7 @@ FOR ADDING TAGS AT ADMISSION
 
 **Update Animal**
 
-*(only shelter can do this)*
+*(only shelter can do this) -- I suggest copying the animal-info page/controllers but instead of adopt button have update button*
 
 \* Update Animal name or description using given id
 
