@@ -6,12 +6,13 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-
+import javafx.scene.control.Button;
 public class LoginController {
 
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
     @FXML private Label statusLabel;
+    @FXML private Button exitBtn;
 
     @FXML
     private void openSignup() throws IOException {
@@ -24,11 +25,16 @@ public class LoginController {
     }
 
     @FXML
+    private void handleExit() throws IOException {
+        App.setRoot("home-page");
+    }
+
+    @FXML
     public void validateUser() throws IOException {
         //check email and password against database
         String email = emailField.getText().trim();
         String password = passwordField.getText();
-        String sql = "SELECT user_id, password FROM user WHERE email = ?";
+        String sql = "SELECT password FROM user WHERE email = ?";
 
         if (email.isEmpty() || password.isEmpty()) {
             System.out.println("Enter your email and password.");
@@ -36,16 +42,26 @@ public class LoginController {
             return;
         }
 
-        System.out.println("EMAIL: " + email + "\nPASSWORD: " + password);
-        //TODO: update database
+        //System.out.println("EMAIL: " + email + "\nPASSWORD: " + password);
 
-        try(var connection = DBUtils.getConnection()){
-            System.out.println("Connected to database!");
+    try (var connection = DBUtils.getConnection();
+        var statement = connection.prepareStatement(sql)) {
+        statement.setString(1, email);
 
-        } catch (Exception e) {
-            System.out.println("error connecting to database");
+        try (var result = statement.executeQuery()) {
+            if (!result.next()
+                    || !password.equals(result.getString("password"))) {
+                statusLabel.setText("Invalid email or password.");
+                return;
+            }
         }
-        //App.setRoot("home-page");
+    } catch (SQLException e) {
+        statusLabel.setText("Unable to sign in.");
+        return;
+    }
+
+    AppState.login();
+    App.setRoot("home-page");
 
     }
 }

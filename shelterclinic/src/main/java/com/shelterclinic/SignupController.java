@@ -1,6 +1,8 @@
 package com.shelterclinic;
 
 import java.io.IOException;
+import java.sql.SQLException;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -19,7 +21,7 @@ public class SignupController {
     @FXML void createUser() throws IOException{
         String email = emailField.getText().trim();
         String password = passwordField.getText();
-        String sql = "INSERT INTO user(email, passowrd) VALUES(?, ?)";
+        String sql = "INSERT INTO user (email, password) VALUES (?, ?)";
 
         //check empty inputs
         if (email.isEmpty() || password.isEmpty()) {
@@ -39,16 +41,25 @@ public class SignupController {
             return;
         }
 
-        System.out.println("EMAIL: " + email + "\nPASSWORD: " + password);
+        //System.out.println("EMAIL: " + email + "\nPASSWORD: " + password);
 
         //insert validated user into database
-        try(var connection = DBUtils.getConnection()){
-            System.out.println("Connected to database!");
 
-        } catch (Exception e) {
-            System.out.println("error connecting to database");
-        }
-        //App.setRoot("home-page");
+    try (var connection = DBUtils.getConnection();
+        var statement = connection.prepareStatement(sql)) {
+        statement.setString(1, email);
+        statement.setString(2, password);
+        statement.executeUpdate();
+    } catch (java.sql.SQLIntegrityConstraintViolationException e) {
+        statusLabel.setText("An account already exists for that email.");
+        return;
+    } catch (SQLException e) {
+        statusLabel.setText("Unable to create the account.");
+        return;
+    }
+
+    App.setRoot("login");
+
 
     }
 }

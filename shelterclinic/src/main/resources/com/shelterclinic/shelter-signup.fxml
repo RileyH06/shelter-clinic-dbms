@@ -6,7 +6,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Hyperlink?>
+
 
 <AnchorPane xmlns="http://javafx.com"
             xmlns:fx="http://javafx.com/fxml/1"
@@ -30,6 +30,6 @@
                 <Label fx:id="statusLabel"/>
 
                 <Button text="Register" onAction="#CreateShelter"/>
-                <Hyperlink text="Login as user" onAction="#openLogin"/>
+
             </VBox>
 </AnchorPane>

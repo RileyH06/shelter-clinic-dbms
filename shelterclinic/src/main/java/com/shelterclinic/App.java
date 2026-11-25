@@ -5,7 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
+import java.sql.SQLException;
+import javafx.scene.control.Alert;
 import java.io.IOException;
 
 /**
@@ -16,24 +17,32 @@ public class App extends Application {
     private static Scene scene;
 
     
-    @Override
-    public void start(Stage stage) throws IOException {
-        //temporary
-        AppState.setShelterName("SPCA");
-        //TODO: GET SHELTER NAME
-        String shelterName = AppState.shelterNameProperty().get();
-        
-        if (shelterName == null || shelterName.isBlank()){
-            scene = new Scene(loadFXML("shelter-signup"), 640, 480);
-        }
-        else {
-            scene = new Scene(loadFXML("home-page"), 640, 480);
-        }
-        System.out.println(AppState.shelterNameProperty());
+@Override
+public void start(Stage stage) throws IOException {
+    String page = "shelter-signup";
+    String sql = "SELECT name FROM shelter WHERE shelter_id = 1";
+    //see if the shelter has been initialized to determine whether to route to shelter signup
+    //TODO: refactor so shelter id is random num and not 1
+    try (var connection = DBUtils.getConnection();
+         var statement = connection.prepareStatement(sql);
+         var result = statement.executeQuery()) {
 
-        stage.setScene(scene);
-        stage.show();
+        if (result.next()) {
+            AppState.setShelterName(result.getString("name"));
+            page = "home-page";
+        }
+    } catch (SQLException e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText("Could not check shelter setup");
+        alert.setContentText("Check your MySQL connection and database setup.");
+        alert.showAndWait();
+        return;
     }
+
+    scene = new Scene(loadFXML(page), 640, 480);
+    stage.setScene(scene);
+    stage.show();
+}
 
     static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
