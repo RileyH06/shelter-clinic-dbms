@@ -9,6 +9,7 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableCell;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.beans.binding.Bindings;
@@ -37,6 +38,16 @@ public class HomePageController {
     @FXML
     private void openAdmission() throws IOException {
         App.setRoot("home-page");
+    }
+
+    @FXML
+    private void handleShowMore(Animal a) {
+        try {
+            App.showAnimalInfo(a);
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.ERROR, "Could not open animal details.")
+                .showAndWait();
+        }
     }
 
     @FXML public void initialize(){
@@ -77,15 +88,20 @@ public class HomePageController {
                 new ReadOnlyStringWrapper(cell.getValue().getTagsTextString()));
         moreDetailsCol.setCellValueFactory(cell ->
                 new ReadOnlyObjectWrapper<>(cell.getValue()));
-        moreDetailsCol.setCellFactory(column -> new TableCell<Animal, Animal>() {
+       moreDetailsCol.setCellFactory(column -> new TableCell<Animal, Animal>() {
             private final Button showMoreButton = new Button("Show more");
 
             {
-                showMoreButton.setDisable(true);
+                showMoreButton.setOnAction(event -> {
+                    Animal animal = getItem();
+                    if (animal != null) {
+                        handleShowMore(animal);
+                    }
+                });
             }
 
-            @Override
-            protected void updateItem(Animal animal, boolean empty) {
+        @Override
+        protected void updateItem(Animal animal, boolean empty) {
                 super.updateItem(animal, empty);
                 setGraphic(empty || animal == null ? null : showMoreButton);
             }
