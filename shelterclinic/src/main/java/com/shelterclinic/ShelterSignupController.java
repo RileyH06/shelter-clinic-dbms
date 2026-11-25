@@ -1,6 +1,8 @@
 package com.shelterclinic;
 
 import java.io.IOException;
+import java.sql.SQLException;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -13,17 +15,13 @@ public class ShelterSignupController {
     @FXML private Label statusLabel;
 
 
-    @FXML
-    private void openLogin() throws IOException {
-        App.setRoot("login");
-    }
-
     @FXML void CreateShelter() throws IOException{
         String name = nameField.getText().trim();
         String password = passwordField.getText();
         String capacityString = capacityField.getText();
         int capacity = 0;
-        String sql = "INSERT INTO shelter(name, capacity, password) VALUES(?, ?, ?)";
+        String sql = "INSERT INTO shelter (shelter_id, name, capacity, password) "
+        + "VALUES (1, ?, ?, ?)";
 
 
         //check empty inputs
@@ -55,17 +53,28 @@ public class ShelterSignupController {
             statusLabel.setText("Shelter name must not exceed 50 characters.");
             return;
         }
-        System.out.println("NAME: " + name + "\nCAPACITY: " + capacity + "\nPASSWORD: " + password);
+        //System.out.println("NAME: " + name + "\nCAPACITY: " + capacity + "\nPASSWORD: " + password);
 
         //insert validated shelter into database
-        //TODO: update database, route to shelter home page
-        try(var connection = DBUtils.getConnection()){
-            System.out.println("Connected to database!");
 
-        } catch (Exception e) {
-            System.out.println("error connecting to database");
+
+    try (var connection = DBUtils.getConnection();
+        var statement = connection.prepareStatement(sql)) {
+        statement.setString(1, name);
+        statement.setInt(2, capacity);
+        statement.setString(3, password);
+        statement.executeUpdate();
+    } catch (SQLException e) {
+        if (e.getErrorCode() == 1062) {
+            statusLabel.setText("A shelter has already been registered.");
+        } else {
+            statusLabel.setText("Unable to register the shelter. Check the database connection.");
         }
-        //App.setRoot("shelter-home-page");
+        return;
+    }
+
+    AppState.setShelterName(name);
+    App.setRoot("shelter-login");
 
     }
 }

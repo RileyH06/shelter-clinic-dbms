@@ -23,24 +23,41 @@ public class ShelterLoginController {
         //check email and password against database
         String id = idField.getText().trim();
         String password = passwordField.getText();
-        String sql = "SELECT shelter_id, password FROM shelter WHERE id = ?";
+        String sql = "SELECT password FROM shelter WHERE shelter_id = ?";
 
         if (id.isEmpty() || password.isEmpty()) {
-            System.out.println("Enter your email and password.");
-            statusLabel.setText("Enter your email and password");
+            System.out.println("Enter your shelter id and password.");
+            statusLabel.setText("Enter your shelter and password");
             return;
         }
 
-        System.out.println("ID: " + id + "\nPASSWORD: " + password);
-        //TODO: update database
+        //System.out.println("ID: " + id + "\nPASSWORD: " + password);
 
-        try(var connection = DBUtils.getConnection()){
-            System.out.println("Connected to database!");
 
-        } catch (Exception e) {
-            System.out.println("error connecting to database");
+    int shelterId;
+    try {
+        shelterId = Integer.parseInt(id);
+    } catch (NumberFormatException e) {
+        statusLabel.setText("Enter a numeric shelter ID.");
+        return;
+    }
+
+    try (var connection = DBUtils.getConnection();
+        var statement = connection.prepareStatement(sql)) {
+        statement.setInt(1, shelterId);
+
+        try (var result = statement.executeQuery()) {
+            if (!result.next() || !password.equals(result.getString("password"))) {
+                statusLabel.setText("Invalid shelter ID or password.");
+                return;
+            }
         }
-        //App.setRoot("home-page");
+    } catch (SQLException e) {
+        statusLabel.setText("Unable to sign in.");
+        return;
+    }
 
+    AppState.login();
+    App.setRoot("home-page");
     }
 }
