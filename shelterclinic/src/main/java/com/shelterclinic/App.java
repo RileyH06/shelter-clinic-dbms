@@ -48,6 +48,7 @@ public void start(Stage stage) throws IOException {
     static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
     }
+    
 static void showAnimalInfo(Animal animal) throws IOException {
     FXMLLoader loader = new FXMLLoader(App.class.getResource("animal-info.fxml"));
     Parent root = loader.load();
