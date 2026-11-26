@@ -10,6 +10,31 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 import com.shelterclinic.DBUtils;
 public class AnimalRepository {
+    public static boolean deleteById(int animalId) throws SQLException {
+        String deleteTags = "DELETE FROM animal_tag WHERE animal_id = ?";
+        String deleteAnimal = "DELETE FROM animal WHERE animal_id = ?";
+        try (var connection = DBUtils.getConnection()) {
+            connection.setAutoCommit(false);
+            try (var tags = connection.prepareStatement(deleteTags);
+                 var animal = connection.prepareStatement(deleteAnimal)) {
+                tags.setInt(1, animalId);
+                tags.executeUpdate();
+
+                animal.setInt(1, animalId);
+                boolean deleted = animal.executeUpdate() == 1;
+                connection.commit();
+                return deleted;
+            } catch (SQLException e) {
+                try {
+                    connection.rollback();
+                } catch (SQLException rollbackError) {
+                    e.addSuppressed(rollbackError);
+                }
+                throw e;
+            }
+        }
+    }
+
     public static void admit(String name, String description, Integer age, String species,
                              String fixed, String vaccinated, List<String> conditions,
                              List<String> tags) throws SQLException {

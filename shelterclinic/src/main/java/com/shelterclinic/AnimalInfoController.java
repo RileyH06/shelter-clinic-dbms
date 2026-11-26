@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import com.shelterclinic.RepositoriesAndEntities.Animal;
+import com.shelterclinic.RepositoriesAndEntities.AnimalRepository;
 import com.shelterclinic.RepositoriesAndEntities.MedicalHistoryRepository;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.Button;
@@ -70,13 +72,35 @@ public class AnimalInfoController {
         medicalConditions.setPlaceholder(new Label("No conditions recorded."));
     }
 
-    //TODO: pass animal id and implement 
     @FXML
-    private void adoptAnimal(){
-        if(selectedAnimal == null || !AppState.isLoggedIn()){
+    private void adoptAnimal() {
+        if (selectedAnimal == null || !AppState.isLoggedIn()) {
             return;
         }
-        int animalId = selectedAnimal.getAnimalId();
+
+        boolean deleted;
+        try {
+            deleted = AnimalRepository.deleteById(selectedAnimal.getAnimalId());
+        } catch (SQLException e) {
+            new Alert(Alert.AlertType.ERROR, "Could not remove the animal from the catalog.")
+                    .showAndWait();
+            return;
+        }
+
+        selectedAnimal = null;
+        adoptBtn.disableProperty().unbind();
+        adoptBtn.setDisable(true);
+        try {
+            goBack();
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.ERROR, "The animal is no longer available. Use Back to try opening the catalog again.")
+                    .showAndWait();
+            return;
+        }
+        if (!deleted) {
+            new Alert(Alert.AlertType.INFORMATION, "This animal is no longer available for adoption.")
+                    .showAndWait();
+        }
     }
 
 }
