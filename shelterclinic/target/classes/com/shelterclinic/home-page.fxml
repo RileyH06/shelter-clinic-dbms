@@ -7,6 +7,12 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.TitledPane?>
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
 
 <AnchorPane xmlns="http://javafx.com"
             xmlns:fx="http://javafx.com/fxml/1"
@@ -18,8 +24,42 @@
                 <Button fx:id="admitBtn" text="Admit animal" onAction="#admitAnimal"/>
 
                 <Label fx:id="shelterNameLabel" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
-                <Label text="Animals available for adoption" style="-fx-font-weight: bold"/>
+                
+                <TitledPane text="Filters" style="-fx-font-weight: bold;" collapsible="true">
+                    <content>
+                        <VBox spacing="8" style="-fx-padding: 12;">
+                        <Label text="Species" labelFor="$speciesCombobox" style="-fx-font-weight: bold;"/>
+                        <ComboBox fx:id="speciesComboBox" promptText="Select">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="DOG"/>
+                                    <String fx:value="CAT"/>
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
 
+                        <Label text="Vaccinated" labelFor="$vaccinatedCombobox" style="-fx-font-weight: bold;"/>
+                        <ComboBox fx:id="vaccinatedComboBox" promptText="Select">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="YES"/>
+                                    <String fx:value="NO"/>
+                                    <String fx:value="UNKNOWN"/>
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                        <Label text="Tags (match any selected)"/>
+                        <FlowPane fx:id="tagChoices" hgap="12" vgap="8"/>
+                        <Label fx:id="tagFilterStatus" wrapText="true" managed="${tagFilterStatus.visible}" visible="false"/>
+                        <HBox spacing="8">
+                            <Button text="Filter" onAction="#applyFilters"/>
+                            <Button text="Clear filters" onAction="#clearFilters"/>
+                        </HBox>
+                        </VBox>
+                    </content>
+                </TitledPane>
+
+                <Label text="Animals available for adoption" style="-fx-font-weight: bold"/>
                 <TableView fx:id="animalTable">
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>

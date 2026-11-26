@@ -14,7 +14,7 @@ You need a JDK, Maven, and a running MySQL server. The app connects to `localhos
    CREATE DATABASE IF NOT EXISTS shelterclinic_schema;
    ```
 
-3. Open a PowerShell terminal in VS Code at the repository root. Set `DB_USER` to your MySQL username and enter your MySQL password at the prompt.
+3. Open a PowerShell terminal in VS Code at the repository root. Set `DB_USER` to your MySQL username and enter your MySQL password at the prompt. Use the values you set when making the database connection.
 
    ```powershell
    $env:DB_USER = "your_mysql_username"

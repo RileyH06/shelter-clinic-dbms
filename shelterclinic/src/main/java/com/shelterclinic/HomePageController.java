@@ -3,7 +3,9 @@ package com.shelterclinic;
 import java.io.IOException;
 import com.shelterclinic.RepositoriesAndEntities.Animal;
 import com.shelterclinic.RepositoriesAndEntities.AnimalRepository;
+import com.shelterclinic.RepositoriesAndEntities.TagRepository;
 import java.sql.SQLException;
+import java.util.stream.Collectors;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.scene.control.TableColumn;
@@ -11,14 +13,21 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
+import javafx.scene.layout.FlowPane;
 
 public class HomePageController {
     @FXML private Label shelterNameLabel;
     @FXML private Button admitBtn;
     @FXML private Button loginButton;
+    @FXML private ComboBox<String> speciesComboBox;
+    @FXML private ComboBox<String> vaccinatedComboBox;
+    @FXML private FlowPane tagChoices;
+    @FXML private Label tagFilterStatus;
     @FXML private TableView<Animal> animalTable;
     @FXML private TableColumn<Animal, String> nameCol;
     @FXML private TableColumn<Animal, Integer> ageCol;
@@ -62,7 +71,15 @@ public class HomePageController {
                 .then("Logout")
                 .otherwise("Login")
         );   
-        renderTable();  
+        try {
+            for (String tag : TagRepository.getAllTagNames()) {
+                tagChoices.getChildren().add(new CheckBox(tag));
+            }
+        } catch (SQLException e) {
+            tagFilterStatus.setText("Could not load tags from the database.");
+            tagFilterStatus.setVisible(true);
+        }
+        renderTable();
      }
 
      @FXML private void renderTable() {
@@ -103,12 +120,37 @@ public class HomePageController {
             }
         });
 
-        animalTable.setPlaceholder(new Label("No animals available for adoption."));
+        applyFilters();
+     }
+
+    @FXML
+    private void applyFilters() {
+        String species = speciesComboBox.getValue();
+        String vaccinated = vaccinatedComboBox.getValue();
+        var tags = tagChoices.getChildren().stream()
+                .map(CheckBox.class::cast)
+                .filter(CheckBox::isSelected)
+                .map(CheckBox::getText)
+                .collect(Collectors.toList());
+        boolean filtering = species != null || vaccinated != null || !tags.isEmpty();
+        animalTable.setPlaceholder(new Label(filtering ? "No animals match these filters."
+                : "No animals available for adoption."));
 
         try {
-            animalTable.getItems().setAll(AnimalRepository.getAllAnimals());
+            animalTable.getItems().setAll(AnimalRepository.findAnimals(species, vaccinated, tags));
         } catch (SQLException e) {
+            animalTable.getItems().clear();
             animalTable.setPlaceholder(new Label("Could not load animals from the database."));
         }
-     }
+    }
+
+    @FXML
+    private void clearFilters() {
+        speciesComboBox.setValue(null);
+        vaccinatedComboBox.setValue(null);
+        for (var choice : tagChoices.getChildren()) {
+            ((CheckBox) choice).setSelected(false);
+        }
+        applyFilters();
+    }
 }
