@@ -2,7 +2,9 @@ package com.shelterclinic;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.concurrent.ThreadLocalRandom;
 
+import javafx.scene.control.Alert;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -21,7 +23,7 @@ public class ShelterSignupController {
         String capacityString = capacityField.getText();
         int capacity = 0;
         String sql = "INSERT INTO shelter (shelter_id, name, capacity, password) "
-        + "VALUES (1, ?, ?, ?)";
+        + "VALUES (?, ?, ?, ?)";
 
 
         //check empty inputs
@@ -58,11 +60,13 @@ public class ShelterSignupController {
         //insert validated shelter into database
 
 
+    int shelterId = ThreadLocalRandom.current().nextInt(100_000, 1_000_000);
     try (var connection = DBUtils.getConnection();
         var statement = connection.prepareStatement(sql)) {
-        statement.setString(1, name);
-        statement.setInt(2, capacity);
-        statement.setString(3, password);
+        statement.setInt(1, shelterId);
+        statement.setString(2, name);
+        statement.setInt(3, capacity);
+        statement.setString(4, password);
         statement.executeUpdate();
     } catch (SQLException e) {
         if (e.getErrorCode() == 1062) {
@@ -74,6 +78,8 @@ public class ShelterSignupController {
     }
 
     AppState.setShelterName(name);
+    new Alert(Alert.AlertType.INFORMATION, "Your shelter ID is " + shelterId + ". Save it for signing in.")
+            .showAndWait();
     App.setRoot("shelter-login");
 
     }
