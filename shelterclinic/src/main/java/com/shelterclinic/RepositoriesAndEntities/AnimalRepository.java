@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
@@ -64,34 +65,57 @@ public class AnimalRepository {
     }
     
 public static List<Animal> getAllAnimals() throws SQLException {
+    return findAnimals(null, null, List.of());
+}
+
+public static List<Animal> findAnimals(String species, String vaccinated, List<String> tags) throws SQLException {
+    String matchTags = "";
+    if (!tags.isEmpty()) {
+        String placeholders = String.join(", ", Collections.nCopies(tags.size(), "?"));
+        matchTags = "AND EXISTS (SELECT 1 FROM animal_tag selected_tag "
+                + "WHERE selected_tag.animal_id = a.animal_id "
+                + "AND selected_tag.tag_name IN (" + placeholders + ")) ";
+    }
     String sql = "SELECT a.animal_id, a.name, a.age, a.description, "
             + "a.species, t.tag_name "
             + "FROM animal a LEFT JOIN animal_tag t ON t.animal_id = a.animal_id "
+            + "LEFT JOIN medical_record r ON r.animal_id = a.animal_id "
+            + "WHERE (? IS NULL OR a.species = ?) "
+            + "AND (? IS NULL OR COALESCE(r.is_vaccinated, 'UNKNOWN') = ?) "
+            + matchTags
             + "ORDER BY a.animal_id, t.tag_name";
 
     Map<Integer, Animal> animals = new LinkedHashMap<>();
 
     try (var connection = DBUtils.getConnection();
-         var statement = connection.prepareStatement(sql);
-         var rows = statement.executeQuery()) {
-        while (rows.next()) {
-            int id = rows.getInt("animal_id");
-            Animal animal = animals.get(id);
+         var statement = connection.prepareStatement(sql)) {
+        statement.setString(1, species);
+        statement.setString(2, species);
+        statement.setString(3, vaccinated);
+        statement.setString(4, vaccinated);
+        for (int i = 0; i < tags.size(); i++) {
+            statement.setString(5 + i, tags.get(i));
+        }
+        try (var rows = statement.executeQuery()) {
+            while (rows.next()) {
+                int id = rows.getInt("animal_id");
+                Animal animal = animals.get(id);
 
-            if (animal == null) {
-                animal = new Animal(
-                        id,
-                        rows.getString("name"),
-                        rows.getObject("age", Integer.class),
-                        rows.getString("description"),
-                        rows.getString("species")
-                );
-                animals.put(id, animal);
-            }
+                if (animal == null) {
+                    animal = new Animal(
+                            id,
+                            rows.getString("name"),
+                            rows.getObject("age", Integer.class),
+                            rows.getString("description"),
+                            rows.getString("species")
+                    );
+                    animals.put(id, animal);
+                }
 
-            String tagName = rows.getString("tag_name");
-            if (tagName != null) {
-                animal.getTags().add(new Tag(tagName));
+                String tagName = rows.getString("tag_name");
+                if (tagName != null) {
+                    animal.getTags().add(new Tag(tagName));
+                }
             }
         }
     }
