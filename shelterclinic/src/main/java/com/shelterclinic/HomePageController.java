@@ -35,6 +35,9 @@ public class HomePageController {
         }
     }
 
+    @FXML private void admitAnimal() throws IOException{
+        App.setRoot("admit-animal");
+    }
     @FXML
     private void openAdmission() throws IOException {
         App.setRoot("home-page");

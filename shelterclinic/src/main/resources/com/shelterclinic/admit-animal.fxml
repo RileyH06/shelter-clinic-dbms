@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TitledPane?>
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+
+
+<AnchorPane xmlns="http://javafx.com"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.shelterclinic.AdmitAnimalController"
+            prefHeight="400.0" prefWidth="600.0">
+    <ScrollPane fitToWidth="true" fitToHeight="true"
+            AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <VBox spacing="10" alignment="CENTER">
+            <Button text="Exit" onAction="#handleExit"/>
+            <Label text="Admission Form" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <TitledPane text="General Information" style="-fx-font-size: 12px; -fx-font-weight: bold;" collapsible="false">
+                <content>
+                    <VBox spacing="8" style="-fx-padding: 12;">
+                        <Label text="Name (optional)" style="-fx-font-weight: bold;" labelFor="$name"/>
+                        <TextField fx:id="name" maxWidth="240"/>
+
+                        <Label text="*Provide a brief description about the animal. You can describe behavior, where it was found, ect (500 character limit)." style="-fx-font-weight: bold;" labelFor="$description"/>
+                        <TextArea fx:id="description"
+                            prefRowCount="4"
+                            wrapText="true"/>
+
+                        <Label text="Age (if known)" style="-fx-font-weight: bold;" labelFor="$age"/>
+                        <TextField fx:id="age" maxWidth="240"/>
+
+                        <Label text="*Species" labelFor="$speciesCombobox" style="-fx-font-weight: bold;"/>
+                        <ComboBox fx:id="speciesComboBox" promptText="Select">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="DOG"/>
+                                    <String fx:value="CAT"/>
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                    </VBox>
+                </content>
+            </TitledPane>
+
+            <TitledPane text="Tags (optional)" style="-fx-font-size: 12px; -fx-font-weight: bold;" collapsible="true">
+                <content>
+                    <VBox spacing="8" style="-fx-padding: 12;">
+                        <Label text="Add some descriptive tags about the animal. This could be extra details about personality, or appearance." style="-fx-font-weight: bold;"/>
+                        <FlowPane fx:id="tagChoices" hgap="12" vgap="8"/>
+                        <HBox spacing="8">
+                            <TextField fx:id="customTag" promptText="Custom tag" onAction="#addTag"/>
+                            <Button text="Add tag" onAction="#addTag"/>
+                        </HBox>
+                        <Label fx:id="tagStatus" wrapText="true"/>
+                    </VBox>
+                </content>
+            </TitledPane>
+            <TitledPane text="Medical History" style="-fx-font-size: 12px; -fx-font-weight: bold;" collapsible="true">
+                <content>
+                    <VBox spacing="8" style="-fx-padding: 12;">
+                        <Label text="*Is the animal fixed?" labelFor="$fixedCombobox" style="-fx-font-weight: bold;"/>
+                        <ComboBox fx:id="fixedComboBox" promptText="Select">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="SPAYED"/>
+                                    <String fx:value="NEUTERED"/>
+                                    <String fx:value="NONE"/>
+                                    <String fx:value="UNKNOWN"/>
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                        
+                        <Label text="*Is the animal vaccinated?" labelFor="$vaccinatedCombobox" style="-fx-font-weight: bold;"/>
+                        <ComboBox fx:id="vaccinatedComboBox" promptText="Select">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="YES"/>
+                                    <String fx:value="NO"/>
+                                    <String fx:value="UNKNOWN"/>
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+
+                        <Label text="Are there any conditions you know about? (255 character limit)" labelFor="$condition" style="-fx-font-weight: bold;"/>
+                        <Button text="Add" onAction="#addCondition"/>
+                        <VBox fx:id="conditionFields" spacing="8">
+                            <TextArea fx:id="condition"
+                                prefRowCount="4"
+                                wrapText="true"/>
+                        </VBox>
+                    </VBox>
+                </content>
+            </TitledPane>
+
+            <Label fx:id="statusLabel" wrapText="true"/>
+            <Button fx:id="submitButton" text="Submit" onAction="#submitForm"/>
+        </VBox>
+    </ScrollPane>
+</AnchorPane>

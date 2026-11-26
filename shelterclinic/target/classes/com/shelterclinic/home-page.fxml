@@ -15,7 +15,7 @@
             <VBox spacing="10" alignment="CENTER"       AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
       AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                 <Button fx:id="loginButton" text="Login" onAction="#handleLoginButton"/>
-                <Button fx:id="admitBtn" text="Admit animal" onAction="#openAdmission"/>
+                <Button fx:id="admitBtn" text="Admit animal" onAction="#admitAnimal"/>
 
                 <Label fx:id="shelterNameLabel" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
                 <Label text="Animals available for adoption" style="-fx-font-weight: bold"/>
