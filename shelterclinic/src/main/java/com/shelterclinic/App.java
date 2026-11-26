@@ -21,9 +21,9 @@ public class App extends Application {
 @Override
 public void start(Stage stage) throws IOException {
     String page = "shelter-signup";
-    String sql = "SELECT name FROM shelter WHERE shelter_id = 1";
+    String sql = "SELECT name FROM shelter";
     //see if the shelter has been initialized to determine whether to route to shelter signup
-    //TODO: refactor so shelter id is random num and not 1
+
     try (var connection = DBUtils.getConnection();
          var statement = connection.prepareStatement(sql);
          var result = statement.executeQuery()) {
