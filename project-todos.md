@@ -5,31 +5,10 @@
 **Account Creation/login**
 \*fix schema for randomized shelter ID
 
-**Home page**
+**general todos**
 \* add filters
-\* add admission form
-
-
-**Admit Animal**
-
-*(Some of the attributes/entities below are optional and can be omitted)*
-
-\* Insert into Animal(name, description, species, age) 
-
-FOR PROVIDING ANY MEDICAL HISTORY
-
-\* Insert into Medical\_Record(animalID, spayedNeutered, isVaccinated)
-
-\* For each medical condition listed --> Insert into medical\_conditions(animalID, medicalCondition)
-
-FOR ADDING TAGS AT ADMISSION
-
-\* Select all tagNames to display
-
-\* Insert into Tag(tagName) if tagname NOT EXISTS
-
-\* For each tagName added --> Insert into Animal\_Tags(animalID, tagName)
-
+\* make adopt button work
+\* make update form + home page for shelter view
 
 
 **Search for animals**
