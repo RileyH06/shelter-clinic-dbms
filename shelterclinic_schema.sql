@@ -13,11 +13,12 @@ CREATE TABLE shelter(
     shelter_id INT NOT NULL,
     singleton TINYINT GENERATED ALWAYS AS (1) STORED,
     name VARCHAR(50) NOT NULL,
-    capacity INT DEFAULT 150 NOT NULL,
+    capacity INT NOT NULL,
     password VARCHAR(255) NOT NULL,
 
     PRIMARY KEY(shelter_id),
-    CONSTRAINT uq_shelter_singleton UNIQUE (singleton)
+    CONSTRAINT uq_shelter_singleton UNIQUE (singleton),
+    CONSTRAINT chk_shelter_capacity CHECK (capacity BETWEEN 1 AND 150)
 );
 
 CREATE TABLE animal(
@@ -50,7 +51,7 @@ CREATE TABLE medical_conditions (
 );
 
 CREATE TABLE Tag(
-    tag_name Varchar(50),
+    tag_name Varchar(50) NOT NULL,
     PRIMARY KEY(tag_name)
 );
 
@@ -59,6 +60,6 @@ CREATE TABLE animal_tag(
     tag_name Varchar(50),
 
     PRIMARY KEY(animal_id, tag_name),
-    FOREIGN KEY(animal_id) REFERENCES Animal(animal_id),
-    FOREIGN KEY(tag_name) REFERENCES Tag(tag_name)
+    FOREIGN KEY(animal_id) REFERENCES animal(animal_id) ON DELETE CASCADE,
+    FOREIGN KEY(tag_name) REFERENCES Tag(tag_name) ON DELETE CASCADE
 );
