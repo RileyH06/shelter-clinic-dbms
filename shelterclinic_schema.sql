@@ -51,7 +51,7 @@ CREATE TABLE medical_conditions (
 );
 
 CREATE TABLE Tag(
-    tag_name Varchar(50),
+    tag_name Varchar(50) NOT NULL,
     PRIMARY KEY(tag_name)
 );
 
@@ -60,6 +60,6 @@ CREATE TABLE animal_tag(
     tag_name Varchar(50),
 
     PRIMARY KEY(animal_id, tag_name),
-    FOREIGN KEY(animal_id) REFERENCES Animal(animal_id),
-    FOREIGN KEY(tag_name) REFERENCES Tag(tag_name)
+    FOREIGN KEY(animal_id) REFERENCES animal(animal_id) ON DELETE CASCADE,
+    FOREIGN KEY(tag_name) REFERENCES Tag(tag_name) ON DELETE CASCADE
 );
