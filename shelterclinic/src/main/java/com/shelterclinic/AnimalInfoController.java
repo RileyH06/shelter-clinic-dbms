@@ -23,6 +23,7 @@ public class AnimalInfoController {
     @FXML private Label descriptionLabel;
     @FXML private Label tagsLabel;
     @FXML private Button adoptBtn;
+    @FXML private Button updateBtn;
     @FXML private Label isFixedLabel;
     @FXML private Label isVaccinatedLabel;
     @FXML private TableView<String> medicalConditions;
@@ -67,9 +68,24 @@ public class AnimalInfoController {
 
     @FXML public void initialize() {
         adoptBtn.disableProperty().bind(AppState.loggedInProperty().not());
+        updateBtn.visibleProperty().bind(AppState.isShelterProperty());
+        updateBtn.managedProperty().bind(AppState.isShelterProperty());
         conditionsCol.setCellValueFactory(cell ->
                 new ReadOnlyStringWrapper(cell.getValue()));
         medicalConditions.setPlaceholder(new Label("No conditions recorded."));
+    }
+
+    @FXML
+    private void updateAnimal() {
+        if (selectedAnimal == null || !AppState.isShelter()) {
+            return;
+        }
+        try {
+            App.showUpdateAnimal(selectedAnimal);
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.ERROR, "Could not open the update form.")
+                .showAndWait();
+        }
     }
 
     @FXML
