@@ -57,6 +57,7 @@ public class ShelterLoginController {
         return;
     }
 
+    AppState.setShelter(true);
     AppState.login();
     App.setRoot("home-page");
     }

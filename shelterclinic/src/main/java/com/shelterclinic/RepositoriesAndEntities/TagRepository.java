@@ -35,4 +35,25 @@ public class TagRepository {
             }
         }
     }
+
+    //removes tags from one animal only, the tag itself stays in the system
+    static void detachTags(Connection connection, int animalId, List<String> names) throws SQLException {
+        String detachTag = "DELETE FROM animal_tag WHERE animal_id = ? AND tag_name = ?";
+        try (var link = connection.prepareStatement(detachTag)) {
+            for (String name : names) {
+                link.setInt(1, animalId);
+                link.setString(2, name);
+                link.executeUpdate();
+            }
+        }
+    }
+
+    //deletes the tag from the system, ON DELETE CASCADE removes it from every animal
+    public static void deleteTag(String name) throws SQLException {
+        try (var connection = DBUtils.getConnection();
+             var statement = connection.prepareStatement("DELETE FROM Tag WHERE tag_name = ?")) {
+            statement.setString(1, name);
+            statement.executeUpdate();
+        }
+    }
 }

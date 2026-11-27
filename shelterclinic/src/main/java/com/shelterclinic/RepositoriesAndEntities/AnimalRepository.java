@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.Optional;
 import com.shelterclinic.DBUtils;
 public class AnimalRepository {
     public static boolean deleteById(int animalId) throws SQLException {
@@ -88,7 +89,97 @@ public class AnimalRepository {
             }
         }
     }
-    
+
+    // Shelter only: updates name/description (age, species, and id can't be updated),
+    // creates or updates the medical record, adds new conditions, and adds/removes tags.
+    public static void update(int animalId, String name, String description,
+                              String fixed, String vaccinated, List<String> newConditions,
+                              List<String> tagsToAdd, List<String> tagsToRemove) throws SQLException {
+        try (var connection = DBUtils.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                String updateAnimal = "UPDATE animal SET name = ?, description = ? WHERE animal_id = ?";
+                try (var animal = connection.prepareStatement(updateAnimal)) {
+                    animal.setString(1, name);
+                    animal.setString(2, description);
+                    animal.setInt(3, animalId);
+                    if (animal.executeUpdate() != 1) {
+                        throw new SQLException("No animal found with ID " + animalId);
+                    }
+                }
+
+                //creates the record if the animal doesn't have one yet, otherwise updates it
+                String saveRecord = "INSERT INTO medical_record (animal_id, is_fixed, is_vaccinated) VALUES (?, ?, ?) "
+                        + "ON DUPLICATE KEY UPDATE is_fixed = ?, is_vaccinated = ?";
+                try (var record = connection.prepareStatement(saveRecord)) {
+                    record.setInt(1, animalId);
+                    record.setString(2, fixed);
+                    record.setString(3, vaccinated);
+                    record.setString(4, fixed);
+                    record.setString(5, vaccinated);
+                    record.executeUpdate();
+                }
+
+                String insertCondition = "INSERT INTO medical_conditions (animal_id, description) VALUES (?, ?) "
+                        + "ON DUPLICATE KEY UPDATE animal_id = animal_id";
+                try (var condition = connection.prepareStatement(insertCondition)) {
+                    condition.setInt(1, animalId);
+                    for (String value : newConditions) {
+                        condition.setString(2, value);
+                        condition.addBatch();
+                    }
+                    condition.executeBatch();
+                }
+
+                TagRepository.detachTags(connection, animalId, tagsToRemove);
+                TagRepository.attachTags(connection, animalId, tagsToAdd);
+                connection.commit();
+            } catch (SQLException e) {
+                try {
+                    connection.rollback();
+                } catch (SQLException rollbackError) {
+                    e.addSuppressed(rollbackError);
+                }
+                throw e;
+            }
+        }
+    }
+
+public static Optional<Animal> findById(int animalId) throws SQLException {
+    String sql = "SELECT a.animal_id, a.name, a.age, a.description, a.species, t.tag_name "
+            + "FROM animal a LEFT JOIN animal_tag t ON t.animal_id = a.animal_id "
+            + "WHERE a.animal_id = ? "
+            + "ORDER BY t.tag_name";
+
+    try (var connection = DBUtils.getConnection();
+         var statement = connection.prepareStatement(sql)) {
+        statement.setInt(1, animalId);
+
+        try (var rows = statement.executeQuery()) {
+            if (!rows.next()) {
+                return Optional.empty();
+            }
+
+            Animal animal = new Animal(
+                    rows.getInt("animal_id"),
+                    rows.getString("name"),
+                    rows.getObject("age", Integer.class),
+                    rows.getString("description"),
+                    rows.getString("species")
+            );
+
+            do {
+                String tagName = rows.getString("tag_name");
+                if (tagName != null) {
+                    animal.getTags().add(new Tag(tagName));
+                }
+            } while (rows.next());
+
+            return Optional.of(animal);
+        }
+    }
+}
+
 public static List<Animal> getAllAnimals() throws SQLException {
     return findAnimals(null, null, List.of());
 }

@@ -58,6 +58,16 @@ static void showAnimalInfo(Animal animal) throws IOException {
 
     scene.setRoot(root);
 }
+
+static void showUpdateAnimal(Animal animal) throws IOException {
+    FXMLLoader loader = new FXMLLoader(App.class.getResource("update-animal.fxml"));
+    Parent root = loader.load();
+
+    UpdateAnimalController controller = loader.getController();
+    controller.setAnimal(animal);
+
+    scene.setRoot(root);
+}
     private static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         return fxmlLoader.load();

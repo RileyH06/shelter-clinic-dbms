@@ -9,6 +9,7 @@ public class AppState {
 
     private static final BooleanProperty loggedIn = new SimpleBooleanProperty(false);
     private static final StringProperty shelterName = new SimpleStringProperty("");
+    private static final BooleanProperty isShelter = new SimpleBooleanProperty(false);
 
     public static BooleanProperty loggedInProperty(){
         return loggedIn;
@@ -24,6 +25,19 @@ public class AppState {
 
     public static void logout(){
         loggedIn.set(false);
+        isShelter.set(false);
+    }
+
+    public static BooleanProperty isShelterProperty() {
+        return isShelter;
+    }
+
+    public static boolean isShelter() {
+        return isShelter.get();
+    }
+
+    public static void setShelter(boolean value){
+        isShelter.set(value);
     }
 
     public static StringProperty shelterNameProperty() {

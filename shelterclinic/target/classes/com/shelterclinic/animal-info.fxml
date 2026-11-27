@@ -52,6 +52,7 @@
             </TitledPane>
 
             <Button fx:id="adoptBtn" text="Adopt" onAction="#adoptAnimal"/>
+            <Button fx:id="updateBtn" text="Update animal" onAction="#updateAnimal"/>
         </VBox>
     </content>
 </ScrollPane>
