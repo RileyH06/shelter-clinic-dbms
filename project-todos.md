@@ -2,34 +2,7 @@
 
 
 
-**Account Creation/login**
-\*fix schema for randomized shelter ID
 
-**general todos**
-\* add filters
-\* make adopt button work
-\* make update form + home page for shelter view
-
-
-**Search for animals**
-
-*(users can search with any combination of filters)*
-
-\* Select all from Animal
-
-\* Select all animals with tagnames listed (use OR for partial matches)
-
-\* Select all from Animal with specified species, age, durationInShelter
-
-\* Select all from animal with specified medical history   isVaccinated, is fixed, # of medical conditions
-
-
-
-**Adopt Animal**
-
-*(user must be logged in for this button to be enabled)*
-
-\* Delete from Animal where id = id of animal chosen by user
 
 
 
