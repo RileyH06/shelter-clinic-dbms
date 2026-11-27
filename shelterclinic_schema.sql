@@ -13,11 +13,12 @@ CREATE TABLE shelter(
     shelter_id INT NOT NULL,
     singleton TINYINT GENERATED ALWAYS AS (1) STORED,
     name VARCHAR(50) NOT NULL,
-    capacity INT DEFAULT 150 NOT NULL,
+    capacity INT NOT NULL,
     password VARCHAR(255) NOT NULL,
 
     PRIMARY KEY(shelter_id),
-    CONSTRAINT uq_shelter_singleton UNIQUE (singleton)
+    CONSTRAINT uq_shelter_singleton UNIQUE (singleton),
+    CONSTRAINT chk_shelter_capacity CHECK (capacity BETWEEN 1 AND 150)
 );
 
 CREATE TABLE animal(

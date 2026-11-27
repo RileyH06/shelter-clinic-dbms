@@ -20,8 +20,8 @@ public class ShelterSignupController {
     @FXML void CreateShelter() throws IOException{
         String name = nameField.getText().trim();
         String password = passwordField.getText();
-        String capacityString = capacityField.getText();
-        int capacity = 0;
+        String capacityString = capacityField.getText().trim();
+        int capacity;
         String sql = "INSERT INTO shelter (shelter_id, name, capacity, password) "
         + "VALUES (?, ?, ?, ?)";
 
@@ -35,12 +35,12 @@ public class ShelterSignupController {
         //check valid capacity value
         try {
             capacity = Integer.parseInt(capacityString);
-            if (capacity < 1 ){
-                statusLabel.setText("Capacity must be an integer value greater than 0");
-                return;
-            }
-        } catch (Exception e) {
-            statusLabel.setText("Capacity must be an integer value greater than 0");
+        } catch (NumberFormatException e) {
+            statusLabel.setText("Capacity must be a whole number between 1 and 150.");
+            return;
+        }
+        if (capacity < 1 || capacity > 150) {
+            statusLabel.setText("Capacity must be a whole number between 1 and 150.");
             return;
         }
 
